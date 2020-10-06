@@ -47,26 +47,22 @@ public class MainActivity extends AppCompatActivity {
 
     private void volleyAPICall() {
         reqestQueue = Volley.newRequestQueue(MainActivity.this);
-        stringRequest = new StringRequest(
+        jsonArrayRequest = new JsonArrayRequest(
                 Request.Method.GET,
                 MyUtil.USER_URL,
-                new Response.Listener<String>() {
+                null,
+                new Response.Listener<JSONArray>() {
                     @Override
-                    public void onResponse(String response) {
-                        try {
-                            dialog = new ProgressDialog(MainActivity.this);
-                            dialog.setTitle("Please wait...");
-                            dialog.show();
+                    public void onResponse(JSONArray response) {
+                        dialog = new ProgressDialog(MainActivity.this);
+                        dialog.setTitle("Please wait a while...");
+                        dialog.show();
 
-                            MyUtil.UserData = new JSONArray(response);
-                            adapter = new MyAdapter(MainActivity.this);
-                            lstData.setAdapter(adapter);
-                            if(dialog.isShowing()){dialog.dismiss();}
+                        MyUtil.UserData = response;
+                        adapter = new MyAdapter(MainActivity.this);
+                        lstData.setAdapter(adapter);
+                        if(dialog.isShowing()){dialog.dismiss();}
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(MainActivity.this,"Something went wrong",Toast.LENGTH_LONG).show();
-                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -77,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-        reqestQueue.add(stringRequest);
+        reqestQueue.add(jsonArrayRequest);
 
     }
 
